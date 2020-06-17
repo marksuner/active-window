@@ -31,8 +31,8 @@ describe('Monitor', () => {
     monitor.setItems(items);
     const applications = monitor.getApplicationTime();
     assert.deepEqual(applications, [
-      {app: 'Google', time: 3 },
-      {app: 'Mozilla', time: 2 },
+      {app: 'Google', time: '00:00:03' },
+      {app: 'Mozilla', time: '00:00:02' },
     ])
   });
   
@@ -60,7 +60,7 @@ describe('Monitor', () => {
     monitor.setItems(items);
     const applications = monitor.getApplicationTime();
     assert.deepEqual(applications, [
-      {app: 'Google', time: 4 },
+      {app: 'Google', time: '00:00:04' },
     ])
   });
 
@@ -105,8 +105,8 @@ describe('Monitor', () => {
     const browsers = monitor.getBrowserTime();
     
     assert.deepEqual(browsers, [
-      {app: 'chrome', time: 3 },
-      {app: 'firefox', time: 2 },
+      {app: 'chrome', time: '00:00:03' },
+      {app: 'firefox', time: '00:00:02' },
     ]);
   });
 
@@ -179,10 +179,10 @@ describe('Monitor', () => {
     const browsers = monitor.getBrowserTabTime();
 
     assert.deepEqual(browsers, [
-      { app: 'chrome', title: 'google Title', time: 1 },
-      { app: 'chrome', title: 'google Title2', time: 4 },
-      { app: 'firefox', title: 'Mozilla title 1', time: 3 },
-      { app: 'firefox', title: 'Mozilla title 2', time: 4 }
+      { app: 'chrome', title: 'google Title', time: '00:00:01' },
+      { app: 'chrome', title: 'google Title2', time: '00:00:04' },
+      { app: 'firefox', title: 'Mozilla title 1', time: '00:00:03' },
+      { app: 'firefox', title: 'Mozilla title 2', time: '00:00:04' }
     ]);
   });
   

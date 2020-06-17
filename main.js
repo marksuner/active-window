@@ -13,7 +13,6 @@ const process = getActiveWindow((err, result) => {
 setTimeout(() => {
   console.log('should kill the process')
 
-  process.end()
   console.log(process.getApplicationTime())
   console.log(process.getBrowserTabTime())
   console.log(process.getBrowserTime())

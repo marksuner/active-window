@@ -1,3 +1,16 @@
+const toReadableTime = (secs) => {
+  return new Date(secs * 1000).toISOString().substr(11, 8);
+  // const x = parseInt(secs, 10)
+  // const hours   = Math.floor(x / 3600)
+  // const minutes = Math.floor(x / 60) % 60
+  // const seconds = x % 60
+
+  // return [hours,minutes,seconds]
+  //     .map(v => v < 10 ? "0" + v : v)
+  //     .filter((v,i) => v !== "00" || i > 0)
+  //     .join(":")
+}
+
 module.exports = class Monitor {
 
   constructor() {
@@ -28,6 +41,17 @@ module.exports = class Monitor {
   }
 
   /**
+   * format to readable time
+   * @param {Array<Object>} items 
+   */
+  format(items) {
+    return items.map(i => ({
+      ...i,
+      time: toReadableTime(i.time)
+    }))
+  }
+
+  /**
    * get all application and count it's session time
    */
   getApplicationTime() {
@@ -38,7 +62,7 @@ module.exports = class Monitor {
       };
     })
 
-    return items.reduce((prev, cur) => {
+    return this.format(items.reduce((prev, cur) => {
       const foundItem = prev.find(p => p.app === cur.app);
 
       if (foundItem) {
@@ -48,7 +72,7 @@ module.exports = class Monitor {
       }
 
       return prev;
-    }, [])
+    }, []))
   }
 
   /**
@@ -73,7 +97,7 @@ module.exports = class Monitor {
         };
       });
 
-    return items.reduce((prev, cur) => {
+    return this.format(items.reduce((prev, cur) => {
       const foundItem = prev.find(p => p.title === cur.title);
 
       if (foundItem) {
@@ -83,6 +107,6 @@ module.exports = class Monitor {
       }
 
       return prev;
-    }, [])
+    }, []))
   }
 }
