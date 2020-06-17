@@ -34,12 +34,12 @@ exports.getActiveWindow = function(callback,repeats,interval){
 
   //Obtain successful response from script
   ls.stdout.on('data', function(stdout){
-    callback(reponseTreatment(stdout.toString()));
+    callback(null, transform(stdout.toString()));
   });
 
   //Obtain error response from script
   ls.stderr.on("data",function(stderr){
-   throw stderr.toString();
+   callback(new Error(stderr.toString()), null);
   });
 
   ls.stdin.end();
@@ -47,25 +47,30 @@ exports.getActiveWindow = function(callback,repeats,interval){
 
 /**
 * Treat and format the response string and put it into a object
-* @function reponseTreatment
+* @function transform
 * @param {string} String received from script
 */
-function reponseTreatment(response){
-  window = {};
-  if(process.platform == 'linux'){
-    response = response.replace(/(WM_CLASS|WM_NAME)(\(\w+\)\s=\s)/g,'').split("\n",2);
-    window.app = response[0];
-    window.title = response[1];
-  }else if (process.platform == 'win32'){
-    response = response.replace(/(@{ProcessName=| AppTitle=)/g,'').slice(0,-1).split(';',2);
-    window.app = response[0];
-    window.title = response[1];
-  }else if(process.platform == 'darwin'){
-    response = response.split(",");
-    window.app = response[0];
-    window.title = response[1].replace(/\n$/, "").replace(/^\s/, "");
+function transform(response){
+  switch(process.platform) {
+    case 'linux':
+      response = response.replace(/(WM_CLASS|WM_NAME)(\(\w+\)\s=\s)/g,'').split("\n",2);
+      return {
+        app: response[0],
+        title: response[1]
+      };
+    case 'win32': 
+      response = response.replace(/(@{ProcessName=| AppTitle=)/g,'').slice(0,-1).split(';',2);
+      return {
+        app: response[0],
+        title: response[1]
+      };
+    case 'darwin': 
+      response = response.split(",");
+      return {
+        app: response[0],
+        title: response[1].replace(/\n$/, "").replace(/^\s/, ""),
+      }
   }
-  return window;
 }
 
 /**
