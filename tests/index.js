@@ -1,0 +1,4 @@
+
+describe('ActiveWindow', () => {
+  require('./unit')
+});

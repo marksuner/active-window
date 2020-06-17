@@ -3,13 +3,24 @@
   "version": "0.1.0",
   "description": "Get active window title.",
   "main": "index.js",
-  "contributors":[{ "name" : "Jason Stallings "
-                  , "email" : "jason@stallin.gs"
-                  , "url" : ""},
-                  { "name" : "Robson Vieira"
-                  , "email" : "robsonvnasc@gmail.com"
-                  , "url" : ""}
-                ],
+  "contributors": [
+    {
+      "name": "Jason Stallings ",
+      "email": "jason@stallin.gs",
+      "url": ""
+    },
+    {
+      "name": "Robson Vieira",
+      "email": "robsonvnasc@gmail.com",
+      "url": ""
+    }
+  ],
   "license": "MIT",
-  "dependencies": {}
+  "scripts": {
+    "test": "mocha tests/index.js"
+  },
+  "dependencies": {
+    "fkill": "^7.0.1",
+    "mocha": "^8.0.1"
+  }
 }

@@ -18,16 +18,21 @@ callback = function(err, window){
     console.log("Title: " + window.title);
   }
 }
-/*Watch the active window 
-  @callback
-  @number of requests; infinity = -1 
-  @interval between requests
-*/
-//monitor.getActiveWindow(callback,-1,1);
 
 //Get the current active window
-monitor.getActiveWindow(callback);
+const process = monitor.getActiveWindow(callback);
 
+// end the process
+process.end();
+
+// get application time
+process.getApplicationTime()
+
+// get browser tab time
+process.getBrowserTabTime()
+
+// get browser time
+process.getBrowserTime()
 
 ```
 ## Tested on
@@ -39,12 +44,12 @@ monitor.getActiveWindow(callback);
   - Debian 8 [cinnamon]
 - OSX
   - Yosemite 10.10.1
-
+  
 ## TODO
-
+- Fix original code to use promise, catch
+- need to update Monitor.BROWSERS on other OS (tested only on windows)
 - Test on more operating systems.
 - Use native APIs. 
 
 ## License
-
 MIT

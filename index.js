@@ -1,5 +1,7 @@
-var fs = require('fs');
-var config = getConfig();
+const fs = require('fs');
+const { spawn } = require('child_process');
+const config = getConfig();
+const Monitor = require('./monitor');
 
 /**
  * This callback handle the response request by getActiveWindow function
@@ -13,11 +15,10 @@ var config = getConfig();
 * @param {integer} [repeats  = 1] - Number of repeats; Use -1 to infinity repeats
 * @param {float}   [interval = 0] - Loop interval in seconds. For milliseconds use fraction (0.1 = 100ms)
 */
-exports.getActiveWindow = function(callback,repeats,interval){
-  const spawn = require('child_process').spawn;
-
-  interval = (interval) ?  interval : 0;
-  repeats = (repeats) ? repeats : 1;
+exports.getActiveWindow = function(callback){
+  const monitor = new Monitor();
+  const interval = 1;
+  let repeats = -1;
 
   //Scape negative number of repeats on Windows OS
   if (process.platform == 'win32' && repeats < 0 ){
@@ -34,7 +35,10 @@ exports.getActiveWindow = function(callback,repeats,interval){
 
   //Obtain successful response from script
   ls.stdout.on('data', function(stdout){
-    callback(null, transform(stdout.toString()));
+    const item = transform(stdout.toString());
+    monitor.addItem(item);
+    console.log('should add item', item)
+    callback(null, item);
   });
 
   //Obtain error response from script
@@ -43,6 +47,17 @@ exports.getActiveWindow = function(callback,repeats,interval){
   });
 
   ls.stdin.end();
+
+  return {
+    end: () => {
+      ls.stderr.destroy();
+      ls.stdin.pause();
+      ls.kill();
+    },
+    getApplicationTime: () => monitor.getApplicationTime(),
+    getBrowserTime: () => monitor.getBrowserTime(),
+    getBrowserTabTime: () => monitor.getBrowserTabTime(),
+  }
 }
 
 /**
@@ -81,6 +96,7 @@ function getConfig(){
   //Retrieve configs
   var configs = JSON.parse(fs.readFileSync(__dirname+'/configs.json', 'utf8'));
   var path = require("path");
+  var config = null;
 
   switch(process.platform){
       case 'linux':
